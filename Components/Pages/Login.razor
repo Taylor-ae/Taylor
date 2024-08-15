@@ -1,0 +1,49 @@
+@page "/"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+<PageTitle>Login</PageTitle>
+
+<div class="form-signin mt-xxl-5">
+    <EditForm Model="@model" OnValidSubmit="OnValidSubmit" FormName="loginForm" Enhance>
+        <DataAnnotationsValidator />
+
+        <img class="mb-4" src="images/logo.png" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">Please login in</h1>
+        <InputText @bind-Value="model.Username" class="form-control" placeholder="Email" />
+        <ValidationMessage For="@(() => model.Username)" />
+        <InputText @bind-Value="model.Password" type="password" class="form-control" placeholder="Password" />
+        <ValidationMessage For="@(() => model.Password)" />
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" value="remember-me"> Remember me
+            </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block">Login in</button>
+        @if (showError)
+        {
+            <div style="color: red; margin-top: 5px;">
+                Incorrect username or password
+            </div>
+        }
+        <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+    </EditForm>
+</div>
+
+@code {
+    [SupplyParameterFromForm(FormName = "loginForm")]
+    public Models.Login model { get; set; } = new();
+    private bool showError = false;
+
+    private void OnValidSubmit()
+    {
+        if (model.Username == "Eugene" && model.Password == "taylor")
+        {
+            NavigationManager.NavigateTo($"/dashboard?username={Uri.EscapeDataString(model.Username)}");
+        }
+        else
+        {
+            showError = true;
+            StateHasChanged();
+        }
+    }
+}
